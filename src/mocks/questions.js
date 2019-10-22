@@ -1,11 +1,8 @@
-export const QuestionType = {
-  GENRE: `genre`,
-  ARTIST: `artist`,
-};
+import {QuestionType} from '../constants';
 
 export const gameSettings = {
-  maxErrors: 3,
-  maxTime: 5,
+  maxErrors: 5,
+  maxTime: 10,
 };
 
 const questions = [
@@ -16,23 +13,23 @@ const questions = [
     answers: [
       {
         genre: `rock`,
-        src: `https://upload.wikimedia.org/wikipedia/commons/1/1f/Uganda_flag_and_national_anthem_-_Oh_Uganda_Land_o.ogg`,
+        src: `https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg`,
       }, {
         genre: `pop`,
-        src: `https://upload.wikimedia.org/wikipedia/commons/1/1f/Uganda_flag_and_national_anthem_-_Oh_Uganda_Land_o.ogg`,
+        src: `https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg`,
       }, {
         genre: `jazz`,
-        src: `https://upload.wikimedia.org/wikipedia/commons/1/1f/Uganda_flag_and_national_anthem_-_Oh_Uganda_Land_o.ogg`,
+        src: `https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg`,
       }, {
         genre: `rock`,
-        src: `https://upload.wikimedia.org/wikipedia/commons/1/1f/Uganda_flag_and_national_anthem_-_Oh_Uganda_Land_o.ogg`,
+        src: `https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg`,
       }
     ]
   }, {
     id: 2,
     type: QuestionType.ARTIST,
     artist: `Пелагея`,
-    src: `https://upload.wikimedia.org/wikipedia/commons/1/1f/Uganda_flag_and_national_anthem_-_Oh_Uganda_Land_o.ogg`,
+    src: `https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg`,
     answers: [
       {
         artist: `Пелагея`,

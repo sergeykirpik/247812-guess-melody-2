@@ -16,6 +16,7 @@ exports[`renders correctly 1`] = `
   </div>
   <button
     className="welcome__button"
+    onClick={[Function]}
   >
     <span
       className="visually-hidden"
@@ -38,12 +39,12 @@ exports[`renders correctly 1`] = `
   >
     <li>
       За 
-      15
+      10
        минут нужно ответить на все вопросы.
     </li>
     <li>
       Можно допустить 
-      2
+      5
        ошибки.
     </li>
   </ul>

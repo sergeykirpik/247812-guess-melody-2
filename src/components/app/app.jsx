@@ -3,55 +3,127 @@ import PropTypes from "prop-types";
 
 import WelcomeScreen from "../welcome-screen/welcome-screen.jsx";
 import GuessArtistScreen from "../guess-artist-screen/guess-artist-screen.jsx";
-import questions from "../../mocks/questions";
 import GuessGenreScreen from "../guess-genre-screen/guess-genre-screen.jsx";
 
-const Screen = {
-  WELCOME: `welcome`,
-  GUESS_ARTIST: `guess-artist`,
-  GUESS_GENRE: `guess-genre`,
-};
-
-const screens = {
-  [Screen.WELCOME]: get = () => <WelcomeScreen />,
-  [Screen.GUESS_ARTIST]: get = (props) => <GuessArtistScreen {...props} />,
-  [Screen.GUESS_GENRE]: get = (props) => <GuessGenreScreen {...props} />
-};
+import {QuestionType} from "../../constants";
 
 class App extends React.Component {
+
+  get welcomeScreen() {
+    const {maxErrors, maxTime} = this.props.settings;
+
+    return <WelcomeScreen
+      time={maxTime}
+      errorCount={maxErrors}
+      onStart={this.handleGameStart}
+    />;
+  }
+
+  get guessArtistScreen() {
+    const {questionIdx} = this.state;
+    const {questions} = this.props;
+    const {src, answers} = questions[questionIdx];
+
+    return <GuessArtistScreen
+      songSrc={src}
+      answers={answers}
+      onAnswer={this.handleAnswer}
+    />;
+  }
+
+  get guessGenreScreen() {
+    const {questionIdx} = this.state;
+    const {questions} = this.props;
+    const {genre, answers} = questions[questionIdx];
+
+    return <GuessGenreScreen
+      genre={genre}
+      answers={answers}
+      onAnswer={this.handleAnswer}
+    />;
+  }
+
+  getScreen() {
+    const {questionIdx} = this.state;
+    const {questions} = this.props;
+    if (questionIdx === -1) {
+      return this.welcomeScreen;
+    }
+    if (questionIdx >= questions.length) {
+      throw new Error(`There is no question with index: ${questionIdx}`);
+    }
+    const {type} = questions[questionIdx];
+    if (type === QuestionType.GENRE) {
+      return this.guessGenreScreen;
+    }
+    if (type === QuestionType.ARTIST) {
+      return this.guessArtistScreen;
+    }
+
+    throw new Error(`Cannot determine legal screen`);
+  }
 
   constructor(props) {
     super(props);
 
     this.state = {
-      screen: Screen.WELCOME,
-    }
+      questionIdx: -1,
+    };
+
+    this.handleGameStart = this.handleGameStart.bind(this);
+    this.handleAnswer = this.handleAnswer.bind(this);
   }
 
-  const {gameTime, errorCount} = props;
-  const {src, answers} = questions[1];
+  handleGameStart() {
+    this.setState({
+      questionIdx: 0,
+    });
+  }
 
-  return (
-    // <WelcomeScreen
-    //   time={gameTime}
-    //   errorCount={errorCount}
-    // />
+  handleAnswer() {
+    const {questions} = this.props;
+    this.setState(({questionIdx}) => ({
+      questionIdx: questionIdx + 1 < questions.length ? questionIdx + 1 : -1,
+    }));
+  }
 
-    // <GuessArtistScreen
-    //   songSrc={src}
-    //   answers={answers}
-    // />
+  render() {
+    return this.getScreen();
+  }
+}
 
-    <GuessGenreScreen
-      genre={questions[0].genre}
-      answers={questions[0].answers}
-    />
-  );
-};
+const artistAnswerType = PropTypes.shape({
+  artist: PropTypes.string.isRequired,
+  picture: PropTypes.string.isRequired,
+}).isRequired;
+
+const genreAnswerType = PropTypes.shape({
+  genre: PropTypes.string.isRequired,
+  src: PropTypes.string.isRequired,
+}).isRequired;
 
 App.propTypes = {
-  gameTime: PropTypes.number.isRequired,
-  errorCount: PropTypes.number.isRequired,
+  settings: PropTypes.shape({
+    maxErrors: PropTypes.number.isRequired,
+    maxTime: PropTypes.number.isRequired,
+  }).isRequired,
+  questions: PropTypes.arrayOf(
+      PropTypes.oneOfType([
+        PropTypes.shape({
+          id: PropTypes.number.isRequired,
+          type: PropTypes.oneOf([QuestionType.ARTIST]).isRequired,
+          artist: PropTypes.string.isRequired,
+          src: PropTypes.string.isRequired,
+          answers: PropTypes.arrayOf(artistAnswerType).isRequired,
+        }).isRequired,
+        PropTypes.shape({
+          id: PropTypes.number.isRequired,
+          type: PropTypes.oneOf([QuestionType.GENRE]).isRequired,
+          genre: PropTypes.string.isRequired,
+          answers: PropTypes.arrayOf(genreAnswerType).isRequired,
+        }).isRequired
+      ]).isRequired
+  ).isRequired
 };
 
 export default App;

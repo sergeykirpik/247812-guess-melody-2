@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+
 const GuessGenreScreen = (props) => {
   const {
     genre,
     answers,
     onAnswer
   } = props;
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (onAnswer) {
