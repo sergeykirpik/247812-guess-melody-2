@@ -7,7 +7,7 @@ import GuessGenreScreen from "../guess-genre-screen/guess-genre-screen.jsx";
 
 import {QuestionType} from "../../constants";
 
-class App extends React.Component {
+class App extends React.PureComponent {
 
   get welcomeScreen() {
     const {maxErrors, maxTime} = this.props.settings;
