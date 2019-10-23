@@ -10,22 +10,8 @@ class GuessGenreScreen extends React.PureComponent {
       answers: this.props.answers.map(() => false),
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(currentIdx) {
-    this.setState(({answers}) => ({
-      answers: answers.map((it, idx) => idx === currentIdx ? !it : it)
-    }));
-  }
-
-  handleSubmit(e) {
-    const {onAnswer} = this.props;
-    e.preventDefault();
-    if (onAnswer) {
-      onAnswer(this.state.answers);
-    }
+    this._handleSubmit = this._handleSubmit.bind(this);
+    this._handleChange = this._handleChange.bind(this);
   }
 
   render() {
@@ -59,7 +45,7 @@ class GuessGenreScreen extends React.PureComponent {
 
         <section className="game__screen">
           <h2 className="game__title">Выберите {genre} треки</h2>
-          <form className="game__tracks" onSubmit={this.handleSubmit}>
+          <form className="game__tracks" onSubmit={this._handleSubmit}>
 
             {answers.map((it, idx) => (
               <div key={idx} className="track" >
@@ -68,7 +54,7 @@ class GuessGenreScreen extends React.PureComponent {
                   <audio src={it.src}></audio>
                 </div>
                 <div className="game__answer">
-                  <input className="game__input visually-hidden" type="checkbox" name="answer" value={genre} id={`answer-${idx}`} onChange={() => this.handleChange(idx)} checked={this.state.answers[idx]}/>
+                  <input className="game__input visually-hidden" type="checkbox" name="answer" value={genre} id={`answer-${idx}`} onChange={() => this._handleChange(idx)} checked={this.state.answers[idx]}/>
                   <label className="game__check" htmlFor={`answer-${idx}`}>Отметить</label>
                 </div>
               </div>
@@ -80,6 +66,21 @@ class GuessGenreScreen extends React.PureComponent {
       </section>
     );
   }
+
+  _handleChange(currentIdx) {
+    this.setState(({answers}) => ({
+      answers: answers.map((it, idx) => idx === currentIdx ? !it : it)
+    }));
+  }
+
+  _handleSubmit(e) {
+    const {onAnswer} = this.props;
+    e.preventDefault();
+    if (onAnswer) {
+      onAnswer(this.state.answers);
+    }
+  }
+
 }
 
 GuessGenreScreen.propTypes = {

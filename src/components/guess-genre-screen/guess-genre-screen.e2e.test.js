@@ -17,8 +17,10 @@ it(`receives correct parameters onAnswer`, () => {
         onAnswer={handleAnswer} />
   );
 
+  wrapper.find(`.game__input`).at(1).simulate(`change`);
+  wrapper.find(`.game__input`).at(2).simulate(`change`);
   wrapper.find(`form`).simulate(`submit`, {preventDefault: () => {}});
 
   expect(handleAnswer).toHaveBeenCalledTimes(1);
-  // expect(handleAnswer).toHaveBeenCalledWith(question.answers[0].artist);
+  expect(handleAnswer).toHaveBeenCalledWith([false, true, true, false]);
 });
