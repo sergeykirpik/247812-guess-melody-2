@@ -9,13 +9,15 @@ it(`sets isPlaying state correctly`, () => {
   const audioPlayer = (
     <AudioPlayer src="some_song_url" />
   );
-  jest.spyOn(AudioPlayer.prototype, `getRef`).mockImplementation(() => ({
-    current: new Audio(``),
+  jest.spyOn(AudioPlayer.prototype, `_getAudioRef`).mockImplementation(() => ({
+    current: {
+      pause: jest.fn(),
+    },
   }));
   const wrapper = shallow(audioPlayer);
 
   wrapper.find(`button`).simulate(`click`);
-  // expect(wrapper.state(`isPlaying`)).toBe(true);
+  expect(wrapper.state(`isPlaying`)).toBe(true);
 
   wrapper.find(`button`).simulate(`click`);
   expect(wrapper.state(`isPlaying`)).toBe(false);

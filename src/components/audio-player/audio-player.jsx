@@ -16,7 +16,7 @@ class AudioPlayer extends React.PureComponent {
     this._handlePlayButtonClick = this._handlePlayButtonClick.bind(this);
   }
 
-  getRef() {
+  _getAudioRef() {
     return this._audioRef;
   }
 
@@ -38,11 +38,9 @@ class AudioPlayer extends React.PureComponent {
   }
 
   componentDidMount() {
-    const {src} = this.props;
-    const audio = this.getRef().current;
-    // const audio = new Audio();
+    const audio = this._getAudioRef().current;
 
-    audio.src = src;
+    audio.src = this.props.src;
 
     audio.oncanplaythrough = () => this.setState({
       isLoading: false,
@@ -63,8 +61,7 @@ class AudioPlayer extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    const audio = this.getRef().current;
-    // const audio = new Audio();
+    const audio = this._getAudioRef().current;
 
     if (this.props.isPlaying) {
       audio.play();
@@ -74,7 +71,7 @@ class AudioPlayer extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    const audio = this.getRef().current;
+    const audio = this._getAudioRef().current;
 
     audio.oncanplaythrough = null;
     audio.onplay = null;
