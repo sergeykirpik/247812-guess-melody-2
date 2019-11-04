@@ -35,7 +35,8 @@ class AudioPlayer extends React.PureComponent {
 
   componentDidMount() {
     const {src} = this.props;
-    const audio = this._audioRef.current;
+    // const audio = this._audioRef.current;
+    const audio = new Audio();
 
     audio.src = src;
 
@@ -58,7 +59,8 @@ class AudioPlayer extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    const audio = this._audioRef.current;
+    // const audio = this._audioRef.current;
+    const audio = new Audio();
 
     if (this.props.isPlaying) {
       audio.play();
@@ -83,10 +85,15 @@ class AudioPlayer extends React.PureComponent {
   }
 }
 
+AudioPlayer.defaultProps = {
+  isPlaying: false,
+  onPlayButtonClick: () => {},
+};
+
 AudioPlayer.propTypes = {
-  isPlaying: PropTypes.bool.isRequired,
-  onPlayButtonClick: PropTypes.func.isRequired,
+  isPlaying: PropTypes.bool,
   src: PropTypes.string.isRequired,
+  onPlayButtonClick: PropTypes.func,
 };
 
 export default AudioPlayer;
