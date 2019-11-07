@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import AudioPlayer from '../audio-player/audio-player.jsx';
 
 class GuessGenreScreen extends React.PureComponent {
 
@@ -8,10 +9,12 @@ class GuessGenreScreen extends React.PureComponent {
 
     this.state = {
       answers: this.props.answers.map(() => false),
+      activePlayer: -1,
     };
 
     this._handleSubmit = this._handleSubmit.bind(this);
     this._handleChange = this._handleChange.bind(this);
+    this._handlePlayButtonClick = this._handlePlayButtonClick.bind(this);
   }
 
   render() {
@@ -49,10 +52,11 @@ class GuessGenreScreen extends React.PureComponent {
 
             {answers.map((it, idx) => (
               <div key={idx} className="track" >
-                <button className="track__button track__button--play" type="button"></button>
-                <div className="track__status">
-                  <audio src={it.src}></audio>
-                </div>
+                <AudioPlayer
+                  src={it.src}
+                  isPlaying={idx === this.state.activePlayer}
+                  onPlayButtonClick={() => this._handlePlayButtonClick(idx)}
+                />
                 <div className="game__answer">
                   <input className="game__input visually-hidden" type="checkbox" name="answer" value={genre} id={`answer-${idx}`} onChange={() => this._handleChange(idx)} checked={this.state.answers[idx]}/>
                   <label className="game__check" htmlFor={`answer-${idx}`}>Отметить</label>
@@ -67,6 +71,12 @@ class GuessGenreScreen extends React.PureComponent {
     );
   }
 
+  _handlePlayButtonClick(idx) {
+    this.setState(({activePlayer}) => ({
+      activePlayer: activePlayer === idx ? -1 : idx,
+    }));
+  }
+
   _handleChange(currentIdx) {
     this.setState(({answers}) => ({
       answers: answers.map((it, idx) => idx === currentIdx ? !it : it)
@@ -76,12 +86,14 @@ class GuessGenreScreen extends React.PureComponent {
   _handleSubmit(e) {
     const {onAnswer} = this.props;
     e.preventDefault();
-    if (onAnswer) {
-      onAnswer(this.state.answers);
-    }
+    onAnswer(this.state.answers);
   }
 
 }
+
+GuessGenreScreen.defaultProps = {
+  onAnswer: () => {},
+};
 
 GuessGenreScreen.propTypes = {
   genre: PropTypes.string.isRequired,

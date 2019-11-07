@@ -1,8 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import GuessArtistScreen from './guess-artist-screen';
-
-import questions from '../../mocks/questions';
+import AudioPlayer from './audio-player';
 
 const createNodeMock = (el) => {
   if (el.type === `audio`) {
@@ -14,11 +12,10 @@ const createNodeMock = (el) => {
 };
 
 it(`renders correctly`, () => {
-  const question = questions[1];
   const tree = renderer
-    .create(<GuessArtistScreen
-      songSrc={question.src}
-      answers={question.answers} />, {createNodeMock})
+    .create(<AudioPlayer
+      src="some_audio_file"
+    />, {createNodeMock})
     .toJSON();
 
   expect(tree).toMatchSnapshot();

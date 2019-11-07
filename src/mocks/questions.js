@@ -13,23 +13,23 @@ const questions = [
     answers: [
       {
         genre: `rock`,
-        src: `https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg`,
+        src: `http://www.tannerhelland.com/dmusic/Retribution.ogg`,
       }, {
         genre: `pop`,
-        src: `https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg`,
+        src: `http://www.tannerhelland.com/dmusic/Deeper.mp3`,
       }, {
         genre: `jazz`,
-        src: `https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg`,
+        src: `http://www.tannerhelland.com/dmusic/AMemoryAway.ogg`,
       }, {
         genre: `rock`,
-        src: `https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg`,
+        src: `http://www.tannerhelland.com/dmusic/TheHaunting.mp3`,
       }
     ]
   }, {
     id: 2,
     type: QuestionType.ARTIST,
     artist: `Пелагея`,
-    src: `https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg`,
+    src: `https://file-examples.com/wp-content/uploads/2017/11/file_example_OOG_1MG.ogg`,
     answers: [
       {
         artist: `Пелагея`,
