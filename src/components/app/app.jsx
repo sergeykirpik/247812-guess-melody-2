@@ -6,92 +6,73 @@ import GuessArtistScreen from "../guess-artist-screen/guess-artist-screen.jsx";
 import GuessGenreScreen from "../guess-genre-screen/guess-genre-screen.jsx";
 
 import {QuestionType} from "../../constants";
+import {ActionCreators} from "../../reducer.js";
 
-class App extends React.PureComponent {
+import {connect} from 'react-redux';
 
-  constructor(props) {
-    super(props);
+const handleGameStart = (dispatch) => () => {
+  dispatch(ActionCreators.startGame());
+};
 
-    this.state = {
-      questionIdx: -1,
-    };
+const handleAnswer = (dispatch) => (answer) => {
+  dispatch(ActionCreators.nextQuestion(answer));
+};
 
-    this._handleGameStart = this._handleGameStart.bind(this);
-    this._handleAnswer = this._handleAnswer.bind(this);
+const getWelcomeScreen = (props) => {
+  const {maxErrors, maxTime} = props.settings;
+
+  return <WelcomeScreen
+    time={maxTime}
+    errorCount={maxErrors}
+    onStart={handleGameStart(props.dispatch)}
+  />;
+};
+
+const getGuessArtistScreen = (props) => {
+  const {questions, questionIdx, dispatch} = props;
+  const {src, answers} = questions[questionIdx];
+
+  return <GuessArtistScreen
+    songSrc={src}
+    answers={answers}
+    onAnswer={handleAnswer(dispatch)}
+  />;
+};
+
+const getGuessGenreScreen = (props) => {
+  const {questions, questionIdx, dispatch} = props;
+  const {genre, answers} = questions[questionIdx];
+
+  return <GuessGenreScreen
+    genre={genre}
+    answers={answers}
+    onAnswer={handleAnswer(dispatch)}
+  />;
+};
+
+const getScreen = (props) => {
+  const {questionIdx, questions} = props;
+  if (questionIdx === -1) {
+    return getWelcomeScreen(props);
+  }
+  if (questionIdx >= questions.length) {
+    throw new Error(`There is no question with index: ${questionIdx}`);
+  }
+  const {type} = questions[questionIdx];
+  if (type === QuestionType.GENRE) {
+    return getGuessGenreScreen(props);
+  }
+  if (type === QuestionType.ARTIST) {
+    return getGuessArtistScreen(props);
   }
 
-  _handleGameStart() {
-    this.setState({
-      questionIdx: 0,
-    });
-  }
+  throw new Error(`Cannot determine legal screen`);
+};
 
-  _handleAnswer() {
-    const {questions} = this.props;
-    this.setState(({questionIdx}) => ({
-      questionIdx: questionIdx + 1 < questions.length ? questionIdx + 1 : -1,
-    }));
-  }
 
-  render() {
-    return this._getScreen();
-  }
-
-  _getScreen() {
-    const {questionIdx} = this.state;
-    const {questions} = this.props;
-    if (questionIdx === -1) {
-      return this._welcomeScreen;
-    }
-    if (questionIdx >= questions.length) {
-      throw new Error(`There is no question with index: ${questionIdx}`);
-    }
-    const {type} = questions[questionIdx];
-    if (type === QuestionType.GENRE) {
-      return this._guessGenreScreen;
-    }
-    if (type === QuestionType.ARTIST) {
-      return this._guessArtistScreen;
-    }
-
-    throw new Error(`Cannot determine legal screen`);
-  }
-
-  get _welcomeScreen() {
-    const {maxErrors, maxTime} = this.props.settings;
-
-    return <WelcomeScreen
-      time={maxTime}
-      errorCount={maxErrors}
-      onStart={this._handleGameStart}
-    />;
-  }
-
-  get _guessArtistScreen() {
-    const {questionIdx} = this.state;
-    const {questions} = this.props;
-    const {src, answers} = questions[questionIdx];
-
-    return <GuessArtistScreen
-      songSrc={src}
-      answers={answers}
-      onAnswer={this._handleAnswer}
-    />;
-  }
-
-  get _guessGenreScreen() {
-    const {questionIdx} = this.state;
-    const {questions} = this.props;
-    const {genre, answers} = questions[questionIdx];
-
-    return <GuessGenreScreen
-      genre={genre}
-      answers={answers}
-      onAnswer={this._handleAnswer}
-    />;
-  }
-
-}
+const App = (props) => {
+  return getScreen(props);
+};
 
 const artistAnswerType = PropTypes.shape({
   artist: PropTypes.string.isRequired,
@@ -127,4 +108,18 @@ App.propTypes = {
   ).isRequired
 };
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    questions: state.questions,
+    questionIdx: state.questionIdx,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+
+  };
+};
+
+export default connect(mapStateToProps)(App);
+export {App};
